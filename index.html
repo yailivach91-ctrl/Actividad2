@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Utilería JS</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="contenedor">
+        <h1>Registro de Usuario</h1>
+        <p class="subtitulo">Ingresa tus datos para continuar</p>
+        <form class="formulario">
+            <div class="grupo-formulario">
+                <label for="nombre"> Nombre Completo:</label>
+                <input type="text"  id="nombre" placeholder="Ej. María López" >
+            </div>
+            <div class="grupo-formulario">
+                <label for="correo">Correo Electrónico:</label>
+                <input type="email" id="correo" placeholder="ejemplo@correo.com">
+            </div>
+            <div class="grupo-formulario">
+                <label for="telefono">Teléfono:</label>
+                <input type="number" id="telefono" placeholder="10 dígitos">
+            </div>
+            <div class="grupo-formulario">
+                <label for="fechaNacimiento">Fecha de Nacimiento:</label>
+                <input type="date" id="fechaNacimiento">
+            </div>
+            <div id="error-msg" class="error-msg"></div>
+            <button type="button" onclick="procesarRegistro()" class="boton-calcular">Registrarse</button>
+        </form>
+        <br>
+        <a href="login.html" class="enlace">Ir al Login</a>
+    </div>
+    <div id="miModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="cerrarModal()">&times;</span>
+            <h2> Registro</h2>
+            <p> Edad calculada: <strong id="modal-edad"></strong> años. </p>
+            <p id="modal-estatus" class="estatus"></p>
+            <p id="modal-moneda"></p>
+        </div>
+    </div>
+    <script src="js/utileria.js"></script>
+    <script>
+        function procesarRegistro() {
+            const errorMsg = document.getElementById("error-msg");
+            errorMsg.textContent = "";
+            let nombre =document.getElementById("nombre").value;
+            let correo =document.getElementById("correo").value;
+            let telefono =document.getElementById("telefono").value;
+            let fecha =document.getElementById("fechaNacimiento").value;
+            nombre = limpiarEspacios(nombre);
+            if (nombre === "" || correo === "" || telefono === "" || fecha === "") {
+                errorMsg.textContent ="Por favor, llena todos los campos.";
+                return;
+            }
+            if (!soloLetras(nombre)) {
+                errorMsg.textContent ="El nombre solo debe contener letras.";
+                return;
+            }
+            if (!validarCorreo(correo)) {
+                errorMsg.textContent ="El correo no tiene un formato válido.";
+                return;
+            }
+            if (!validarLongitud(telefono, 10)) {
+                errorMsg.textContent ="El teléfono debe tener exactamente 10 dígitos.";
+                return;
+            }
+            const edad =calcularEdad(fecha);
+            const mayorDeEdad =esMayorDeEdad(fecha);
+            const usuario =correo.split("@")[0].toLowerCase();
+            document.getElementById("modal-edad").textContent =edad;
+            const estatus = document.getElementById("modal-estatus");
+            if (mayorDeEdad) {
+                estatus.textContent = "Eres mayor de edad.";
+                estatus.style.color = "green";
+            } else {
+                estatus.textContent ="Eres menor de edad.";
+                estatus.style.color = "red";
+            }
+            document.getElementById("miModal").style.display = "flex";
+        }
+        function cerrarModal() {
+            document.getElementById("miModal").style.display = "none";
+        }
+    </script>
+</body>
+</html>
